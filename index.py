@@ -35,6 +35,13 @@ while True:
         # if event.type == pygame.MOUSEMOTION:
         # if player_retangulo.collidepoint(event.pos)
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                print('jump')
+
+        if event.type == pygame.KEYUP:
+            print('key up')
+
     screen.blit(sky_surface, (0, 0))
     screen.blit(ground_surface, (0, 300))
     pygame.draw.rect(screen, '#c0e8ec', score_retangulo)
