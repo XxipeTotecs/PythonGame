@@ -25,22 +25,21 @@ snail_retangulo = snail_surface.get_rect(midbottom=(80, 300))
 player_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/Player/player_walk_1.png').convert_alpha()
 player_retangulo = player_surface.get_rect(midbottom=(80, 300))
-
+player_gravidade = 0
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        # if event.type == pygame.MOUSEMOTION:
-        # if player_retangulo.collidepoint(event.pos)
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if player_retangulo.collidepoint(event.pos):
+                player_gravidade = -20
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                print('jump')
-
-        if event.type == pygame.KEYUP:
-            print('key up')
+                player_gravidade = -20
 
     screen.blit(sky_surface, (0, 0))
     screen.blit(ground_surface, (0, 300))
@@ -52,6 +51,12 @@ while True:
     if snail_retangulo.right <= 0:
         snail_retangulo.left = 800
     screen.blit(snail_surface, snail_retangulo)
+
+    # Player
+    player_gravidade += 1
+    player_retangulo.y += player_gravidade
+    if player_retangulo.bottom >= 300:
+        player_retangulo.bottom = 300
     screen.blit(player_surface, player_retangulo)
 
     pygame.display.update()
