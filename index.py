@@ -1,7 +1,6 @@
 import pygame
 from sys import exit
 
-
 pygame.init()
 screen = pygame.display.set_mode((800, 400))
 pygame.display.set_caption('O Corredor')
@@ -16,7 +15,7 @@ text_surface = test_font.render('Bem Vindo ao Corredor', False, 'Black')
 
 snail_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/snail/snail1.png').convert_alpha()
-snailXPosition = 600
+snail_retangulo = snail_surface.get_rect(midbottom=(80, 300))
 
 player_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/Player/player_walk_1.png').convert_alpha()
@@ -33,12 +32,12 @@ while True:
     screen.blit(sky_surface, (0, 0))
     screen.blit(ground_surface, (0, 300))
     screen.blit(text_surface, (250, 50))
-    screen.blit(player_surface, player_retangulo)
 
-    snailXPosition -= 4
-    if snailXPosition < -100:
-        snailXPosition = 800
-    screen.blit(snail_surface, (snailXPosition, 261))
+    snail_retangulo.x -= 4
+    if snail_retangulo.right <= 0:
+        snail_retangulo.left = 800
+    screen.blit(snail_surface, snail_retangulo)
+    screen.blit(player_surface, player_retangulo)
 
     pygame.display.update()
     clock.tick(60)
