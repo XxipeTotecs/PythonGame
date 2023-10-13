@@ -7,7 +7,7 @@ screen = pygame.display.set_mode((800, 400))
 pygame.display.set_caption('O Corredor')
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('UltimatePygameIntro/font/Pixeltype.ttf', 40)
-
+game_active = True
 
 sky_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/Sky.png').convert()
@@ -33,31 +33,45 @@ while True:
             pygame.quit()
             exit()
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if player_retangulo.collidepoint(event.pos):
-                player_gravidade = -20
+        if game_active:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if player_retangulo.collidepoint(event.pos) and player_retangulo.bottom >= 300:
+                    player_gravidade = -20
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                player_gravidade = -20
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and player_retangulo.bottom >= 300:
+                    player_gravidade = -20
 
-    screen.blit(sky_surface, (0, 0))
-    screen.blit(ground_surface, (0, 300))
-    pygame.draw.rect(screen, '#c0e8ec', score_retangulo)
-    pygame.draw.rect(screen, '#c0e8ec', score_retangulo, 10)
-    screen.blit(score_surface, score_retangulo)
+        else:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                game_active = True
+                snail_retangulo.left = 800
 
-    snail_retangulo.x -= 4
-    if snail_retangulo.right <= 0:
-        snail_retangulo.left = 800
-    screen.blit(snail_surface, snail_retangulo)
+    if game_active:
+        screen.blit(sky_surface, (0, 0))
+        screen.blit(ground_surface, (0, 300))
+        pygame.draw.rect(screen, '#c0e8ec', score_retangulo)
+        pygame.draw.rect(screen, '#c0e8ec', score_retangulo, 10)
+        screen.blit(score_surface, score_retangulo)
 
-    # Player
-    player_gravidade += 1
-    player_retangulo.y += player_gravidade
-    if player_retangulo.bottom >= 300:
-        player_retangulo.bottom = 300
-    screen.blit(player_surface, player_retangulo)
+        snail_retangulo.x -= 4
+        if snail_retangulo.right <= 0:
+            snail_retangulo.left = 800
+        screen.blit(snail_surface, snail_retangulo)
+
+        # Player
+        player_gravidade += 1
+        player_retangulo.y += player_gravidade
+        if player_retangulo.bottom >= 300:
+            player_retangulo.bottom = 300
+        screen.blit(player_surface, player_retangulo)
+
+        # Colisão
+        if snail_retangulo.colliderect(player_retangulo):
+            game_active = False
+
+    else:
+        screen.fill('Blue')
 
     pygame.display.update()
     clock.tick(60)
