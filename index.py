@@ -3,8 +3,9 @@ from sys import exit
 
 
 def displayScore():
-    current_time = pygame.time.get_ticks() - start_game
-    score_surface = test_font.render(f'{current_time}', False, (64, 64, 64))
+    current_time = int(pygame.time.get_ticks() / 1000) - start_game
+    score_surface = test_font.render(
+        f'Score: {current_time}', False, (64, 64, 64))
     score_retangulo = score_surface.get_rect(center=(400, 50))
     screen.blit(score_surface, score_retangulo)
 
@@ -14,7 +15,7 @@ screen = pygame.display.set_mode((800, 400))
 pygame.display.set_caption('O Corredor')
 clock = pygame.time.Clock()
 test_font = pygame.font.Font('UltimatePygameIntro/font/Pixeltype.ttf', 40)
-game_active = True
+game_active = False
 start_game = 0
 
 sky_surface = pygame.image.load(
@@ -35,6 +36,14 @@ player_surface = pygame.image.load(
 player_retangulo = player_surface.get_rect(midbottom=(80, 300))
 player_gravidade = 0
 
+
+# Intro Screen
+
+player_stand = pygame.image.load(
+    'UltimatePygameIntro/graphics/Player/player_stand.png')
+player_stand_rect = player_stand.get_rect(center=(400, 200))
+
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -54,7 +63,7 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
                 snail_retangulo.left = 800
-                start_game = pygame.time.get_ticks()
+                start_game = int(pygame.time.get_ticks() / 1000)
 
     if game_active:
         screen.blit(sky_surface, (0, 0))
@@ -81,7 +90,8 @@ while True:
             game_active = False
 
     else:
-        screen.fill('Blue')
+        screen.fill((94, 129, 162))
+        screen.blit(player_stand, player_stand_rect)
 
     pygame.display.update()
     clock.tick(60)
