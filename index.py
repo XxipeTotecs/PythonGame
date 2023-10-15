@@ -1,5 +1,6 @@
 import pygame
 from sys import exit
+from random import randint
 
 
 def displayScore():
@@ -9,6 +10,18 @@ def displayScore():
     score_retangulo = score_surface.get_rect(center=(400, 50))
     screen.blit(score_surface, score_retangulo)
     return current_time
+
+
+def obstacleMovement(obstacle_list):
+    if obstacle_list:
+        for obstacle_rect in obstacle_list:
+            obstacle_rect.x -= 5
+
+            screen.blit(snail_surface, obstacle_rect)
+
+        return obstacle_list
+    else:
+        return []
 
 
 pygame.init()
@@ -32,6 +45,8 @@ ground_surface = pygame.image.load(
 snail_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/snail/snail1.png').convert_alpha()
 snail_retangulo = snail_surface.get_rect(midbottom=(80, 300))
+obstacle_rect_list = []
+
 
 player_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/Player/player_walk_1.png').convert_alpha()
@@ -52,6 +67,10 @@ game_name_retangulo = game_name.get_rect(center=(400, 80))
 
 game_message = test_font.render('Press Space to RUN', False, (111, 196, 169))
 game_message_rect = game_message.get_rect(center=(400, 320))
+
+# Timer
+obstacle_timer = pygame.USEREVENT + 1
+pygame.time.set_timer(obstacle_timer, 900)
 
 while True:
     for event in pygame.event.get():
@@ -74,6 +93,10 @@ while True:
                 snail_retangulo.left = 800
                 start_game = int(pygame.time.get_ticks() / 1000)
 
+        if event.type == obstacle_timer and game_active:
+            obstacle_rect_list.append(
+                snail_surface.get_rect(bottomright=(randint(900, 1100), 300)))
+
     if game_active:
         screen.blit(sky_surface, (0, 0))
         screen.blit(ground_surface, (0, 300))
@@ -82,10 +105,10 @@ while True:
         # screen.blit(score_surface, score_retangulo)
         score = displayScore()
 
-        snail_retangulo.x -= 4
-        if snail_retangulo.right <= 0:
-            snail_retangulo.left = 800
-        screen.blit(snail_surface, snail_retangulo)
+       # snail_retangulo.x -= 4
+       # if snail_retangulo.right <= 0:
+       #     snail_retangulo.left = 800
+       # screen.blit(snail_surface, snail_retangulo)
 
         # Player
         player_gravidade += 1
@@ -93,6 +116,9 @@ while True:
         if player_retangulo.bottom >= 300:
             player_retangulo.bottom = 300
         screen.blit(player_surface, player_retangulo)
+
+        # Obstacle Movement
+        obstacle_rect_list = obstacleMovement(obstacle_rect_list)
 
         # Colisão
         if snail_retangulo.colliderect(player_retangulo):
