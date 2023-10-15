@@ -8,6 +8,7 @@ def displayScore():
         f'Score: {current_time}', False, (64, 64, 64))
     score_retangulo = score_surface.get_rect(center=(400, 50))
     screen.blit(score_surface, score_retangulo)
+    return current_time
 
 
 pygame.init()
@@ -17,6 +18,7 @@ clock = pygame.time.Clock()
 test_font = pygame.font.Font('UltimatePygameIntro/font/Pixeltype.ttf', 40)
 game_active = False
 start_game = 0
+score = 0
 
 sky_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/Sky.png').convert()
@@ -78,7 +80,7 @@ while True:
         # pygame.draw.rect(screen, '#c0e8ec', score_retangulo)
         # pygame.draw.rect(screen, '#c0e8ec', score_retangulo, 10)
         # screen.blit(score_surface, score_retangulo)
-        displayScore()
+        score = displayScore()
 
         snail_retangulo.x -= 4
         if snail_retangulo.right <= 0:
@@ -99,8 +101,15 @@ while True:
     else:
         screen.fill((94, 129, 162))
         screen.blit(player_stand, player_stand_rect)
-        screen.blit(game_name, game_name_retangulo)
-        screen.blit(game_message, game_message_rect)
 
+        score_message = test_font.render(
+            f'Seu score: {score} pontos', False, (111, 196, 169))
+        score_message_rect = score_message.get_rect(center=(400, 330))
+        screen.blit(game_name, game_name_retangulo)
+
+        if score == 0:
+            screen.blit(game_message, game_message_rect)
+        else:
+            screen.blit(score_message, score_message_rect)
     pygame.display.update()
     clock.tick(60)
