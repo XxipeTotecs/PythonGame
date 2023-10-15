@@ -17,7 +17,13 @@ def obstacleMovement(obstacle_list):
         for obstacle_rect in obstacle_list:
             obstacle_rect.x -= 5
 
-            screen.blit(snail_surface, obstacle_rect)
+            if obstacle_rect.bottom == 300:
+                screen.blit(snail_surface, obstacle_rect)
+            else:
+                screen.blit(fly_surface, obstacle_rect)
+
+        obstacle_list = [
+            obstacle for obstacle in obstacle_list if obstacle.x > -100]
 
         return obstacle_list
     else:
@@ -42,11 +48,15 @@ ground_surface = pygame.image.load(
 # score_surface = test_font.render('Bem Vindo ao Corredor', False, (64, 64, 64))
 # score_retangulo = score_surface.get_rect(center=(400, 50))
 
+
+# Obstacles
 snail_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/snail/snail1.png').convert_alpha()
-snail_retangulo = snail_surface.get_rect(midbottom=(80, 300))
-obstacle_rect_list = []
+fly_surface = pygame.image.load(
+    'UltimatePygameIntro/graphics/Fly/Fly1.png').convert_alpha()
 
+
+obstacle_rect_list = []
 
 player_surface = pygame.image.load(
     'UltimatePygameIntro/graphics/Player/player_walk_1.png').convert_alpha()
@@ -70,7 +80,7 @@ game_message_rect = game_message.get_rect(center=(400, 320))
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, 900)
+pygame.time.set_timer(obstacle_timer, 1400)
 
 while True:
     for event in pygame.event.get():
@@ -90,12 +100,15 @@ while True:
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
-                snail_retangulo.left = 800
                 start_game = int(pygame.time.get_ticks() / 1000)
 
         if event.type == obstacle_timer and game_active:
-            obstacle_rect_list.append(
-                snail_surface.get_rect(bottomright=(randint(900, 1100), 300)))
+            if randint(0, 2):
+                obstacle_rect_list.append(
+                    snail_surface.get_rect(bottomright=(randint(900, 1100), 300)))
+            else:
+                obstacle_rect_list.append(
+                    fly_surface.get_rect(bottomright=(randint(900, 1100), 210)))
 
     if game_active:
         screen.blit(sky_surface, (0, 0))
@@ -121,8 +134,6 @@ while True:
         obstacle_rect_list = obstacleMovement(obstacle_rect_list)
 
         # Colisão
-        if snail_retangulo.colliderect(player_retangulo):
-            game_active = False
 
     else:
         screen.fill((94, 129, 162))
