@@ -38,6 +38,20 @@ def collisions(player, obstacles):
     return True
 
 
+def player_animation():
+    # play walking animation if the player is on floor
+    # display the jump surface when player is not on floor
+    global player_surface, player_index
+
+    if player_retangulo.bottom < 300:
+        player_surface = player_jump
+    else:
+        player_index += 0.1
+        if player_index >= len(player_walk):
+            player_index = 0
+        player_surface = player_walk[int(player_index)]
+
+
 pygame.init()
 screen = pygame.display.set_mode((800, 400))
 pygame.display.set_caption('O Corredor')
@@ -66,8 +80,16 @@ fly_surface = pygame.image.load(
 
 obstacle_rect_list = []
 
-player_surface = pygame.image.load(
+player_walk_1 = pygame.image.load(
     'UltimatePygameIntro/graphics/Player/player_walk_1.png').convert_alpha()
+player_walk_2 = pygame.image.load(
+    'UltimatePygameIntro/graphics/Player/player_walk_2.png').convert_alpha()
+player_walk = [player_walk_1, player_walk_2]
+player_index = 0
+player_jump = pygame.image.load(
+    'UltimatePygameIntro/graphics/Player/jump.png').convert_alpha()
+
+player_surface = player_walk[player_index]
 player_retangulo = player_surface.get_rect(midbottom=(80, 300))
 player_gravidade = 0
 
@@ -136,6 +158,7 @@ while True:
         player_retangulo.y += player_gravidade
         if player_retangulo.bottom >= 300:
             player_retangulo.bottom = 300
+            player_animation()
         screen.blit(player_surface, player_retangulo)
 
         # Obstacle Movement
