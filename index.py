@@ -30,6 +30,14 @@ def obstacleMovement(obstacle_list):
         return []
 
 
+def collisions(player, obstacles):
+    if obstacles:
+        for obstacles_rect in obstacles:
+            if player.colliderect(obstacles_rect):
+                return False
+    return True
+
+
 pygame.init()
 screen = pygame.display.set_mode((800, 400))
 pygame.display.set_caption('O Corredor')
@@ -134,10 +142,14 @@ while True:
         obstacle_rect_list = obstacleMovement(obstacle_rect_list)
 
         # Colisão
+        game_active = collisions(player_retangulo, obstacle_rect_list)
 
     else:
         screen.fill((94, 129, 162))
         screen.blit(player_stand, player_stand_rect)
+        obstacle_rect_list.clear()
+        player_retangulo.midbottom = (80, 300)
+        player_gravidade = 0
 
         score_message = test_font.render(
             f'Seu score: {score} pontos', False, (111, 196, 169))
